@@ -380,14 +380,13 @@ int Graph::Dijkstra(Node* current) {
 
         // The top node will be the one with lowest dijkstra cost
         Node* next = frontier.top();
-        cout << next->dijk_cost << endl; 
         frontier.pop();
         return Dijkstra(next);
     } else {
         Node* iter = current;
         while (iter != NULL) {
             iter->printBoard();
-            cout << endl;
+            cout << iter->dijk_cost << endl << endl;
             iter = iter->parent;
         }
         return current->dijk_cost;
