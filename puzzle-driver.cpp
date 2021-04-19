@@ -49,17 +49,17 @@ int main()
 
     if(alg == "DFS")
     {
-        cout << "DFS sequence of moves (read bottom up): " << endl;
         int result = g.DFS(tempMatrix);
-        cout << endl << "DFS Finished with " << result << " moves." << endl;
+        cout << endl << "DFS found a solution with " << g.getDfsCost() << " cost." << endl;
+        cout << endl << "DFS found a solution that makes " << result << " moves." << endl;
     } else if(alg == "BFS") {
-        cout << "BFS sequence of moves: " << endl;
+        cout << "BFS sequence of moves in solution (read top down): " << endl;
         int result2 = g1.BFS(tempMatrix);
-        cout << endl << "BFS Finished with " << result2 << " moves." << endl;
+        cout << endl << "BFS found a solution that makes " << result2 << " moves." << endl;
     } else if(alg == "Dijkstra") {
-        cout << "Dijkstra's algorithm sequence of moves: ";
+        cout << "Dijkstra's algorithm sequence of moves in solution (read bottom up): " << endl;
         int result3 = g2.Dijkstra(g2.head);
-        cout << endl << "Dijkstra's algorithm finished with " << result3 << " cost." << endl;
+        cout << endl << "Dijkstra's algorithm found a solution with " << result3 << " cost." << endl;
     } else {
         cout << "Incorrect input" << endl;
     }

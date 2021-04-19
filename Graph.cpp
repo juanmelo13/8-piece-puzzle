@@ -36,6 +36,7 @@ int Graph::BFS(int temp[3][3])
             explored.push_back(n1);
             done = checkResult(n1->temp);
             if(done == true){
+                int x = n1 -> dijk_cost;
                 stack<Node*> path;
                 while(n1->parent != NULL)
                 {
@@ -64,6 +65,7 @@ int Graph::BFS(int temp[3][3])
                     cout << endl;
                     path.pop();
                 }
+                cout << endl << "BFS found a solution with " << x << " cost." << endl;
                 return cost;
             }
             makeMove(n1->temp, n1);
@@ -72,15 +74,15 @@ int Graph::BFS(int temp[3][3])
     return -1; 
 }
 
-int Graph::DFS(int temp[3][3])
+int Graph::DFS(int temp[3][3], int cost)
 {
     bool done = checkResult(temp);
-    int cost = 0;
+    int moves = 0;
 
     //This only checks if the original input matrix is the goal state
     if(done == true)
     {
-        return cost;
+        return moves;
     }
 
     //n1 equals the node at the front of the queue, the next state will always be the only node in the queue
@@ -135,6 +137,9 @@ int Graph::DFS(int temp[3][3])
         done = checkResult(childMatrix);
         if(done == true)
         {
+            setDfsCost(cost + possibleMoves.at(i));
+
+            cout << "DFS sequence of moves in solution (read bottom up): " << endl;
             //printing the goal state
             for(int i = 0; i < 3; i++)
             {
@@ -230,11 +235,11 @@ int Graph::DFS(int temp[3][3])
             q.push(n2);
 
             //cost equals the value returned from DFS of the child state
-            cost = DFS(n2 -> temp);
+            moves = DFS(n2 -> temp, cost + possibleMoves.at(i));
         }
 
         //cost is checked once this state is returned to from its child. If cost is greater than zero, the goal state has been found
-        if(cost > 0)
+        if(moves > 0)
         {
             //printing all positions including the start state that led to the goal state
             for(int i = 0; i < 3; i++)
@@ -262,7 +267,7 @@ int Graph::DFS(int temp[3][3])
             //printing that move
             cout << move << endl;*/
             
-            return (cost + 1);
+            return (moves + 1);
         }
     }
 
@@ -346,6 +351,7 @@ Node* Graph::createNode(int temp[3][3], Node* n)
             head->next = n1;
             n1->prev = head;
             n1->parent = head;
+            n1->getDijkCost();
         }else
         {
             Node *itr = head;
@@ -371,6 +377,7 @@ bool Graph::checkResult(int temp[3][3])
 }
 
 int Graph::Dijkstra(Node* current) {
+    discovered.push_back(current);
     bool done = checkResult(current->temp);
     if (done != true) {
         // Update the matrix with the current state
@@ -378,17 +385,46 @@ int Graph::Dijkstra(Node* current) {
         // Generate the possible moves
         makeMove(current->temp, current, true);
 
-        // The top node will be the one with lowest dijkstra cost
-        Node* next = frontier.top();
-        frontier.pop();
-        return Dijkstra(next);
+        bool undiscovered = false;
+        while(undiscovered == false)
+        {
+            undiscovered = true;
+            for(unsigned int j = 0; j < discovered.size(); j++)
+            {
+                if((frontier.top() -> temp)[0][0] == (discovered.at(j) -> temp)[0][0] && (frontier.top() -> temp)[0][1] == (discovered.at(j) -> temp)[0][1] && (frontier.top() -> temp)[0][2] == (discovered.at(j) -> temp)[0][2] && (frontier.top() -> temp)[1][0] == (discovered.at(j) -> temp)[1][0] && (frontier.top() -> temp)[1][1] == (discovered.at(j) -> temp)[1][1] && (frontier.top() -> temp)[1][2] == (discovered.at(j) -> temp)[1][2] && (frontier.top() -> temp)[2][0] == (discovered.at(j) -> temp)[2][0] && (frontier.top() -> temp)[2][1] == (discovered.at(j) -> temp)[2][1] && (frontier.top() -> temp)[2][2] == (discovered.at(j) -> temp)[2][2])
+                {
+                    undiscovered = false;
+                }
+            }
+            if(undiscovered == true)
+            {
+                Node* next = frontier.top();
+                frontier.pop();
+                return Dijkstra(next);
+            } else {
+                frontier.pop();
+            }
+        }
     } else {
+        int numMoves = -1;
         Node* iter = current;
         while (iter != NULL) {
             iter->printBoard();
-            cout << iter->dijk_cost << endl << endl;
+            //cout << iter->dijk_cost << endl << endl;
             iter = iter->parent;
+            numMoves++;
         }
+        cout << endl << "Dijkstra's algorithm found a solution that makes " << numMoves << " moves." << endl;
         return current->dijk_cost;
     }
+}
+
+void Graph::setDfsCost(int cost)
+{
+    dfsCost = cost;
+}
+
+int Graph::getDfsCost()
+{
+    return dfsCost;
 }

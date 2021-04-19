@@ -21,7 +21,7 @@ class Graph
         Graph();
         Graph(int temp[3][3], AdjMatrix);
         int BFS(int temp[3][3]);
-        int DFS(int temp[3][3]);
+        int DFS(int temp[3][3], int cost = 0);
         int Dijkstra(Node* current);
         void makeMove(int temp[3][3], Node* n, bool dijkstra = false);
         bool checkResult(int temp[3][3]);
@@ -32,9 +32,12 @@ class Graph
         Node *head;
         vector<Node*> discovered;
         DijkstraQ frontier;
+        void setDfsCost(int cost);
+        int getDfsCost();
     private:
         int move[3][3];
         Node *next;
+        int dfsCost;
 };
 
 #endif
