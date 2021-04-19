@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Graph.hpp"
-#include "Node.hpp"
+
 using namespace std;
 
 Graph::Graph()
@@ -273,7 +273,7 @@ int Graph::DFS(int temp[3][3])
     return 0;
 }
 
-void Graph::makeMove(int temp[3][3], Node* n)
+void Graph::makeMove(int temp[3][3], Node* n, bool dijkstra)
 {
     vector<int> possibleMoves = matrix.getNeighbors(0);
     while(possibleMoves.empty() != true){
@@ -333,6 +333,9 @@ void Graph::makeMove(int temp[3][3], Node* n)
         {
             Node* n1 = createNode(childMatrix, n);
             q.push(n1);
+
+            // If moving with Dijkstra, push node into priority queue
+            if (dijkstra) frontier.push(n1);
         }
     }
 }
@@ -353,6 +356,7 @@ Node* Graph::createNode(int temp[3][3], Node* n)
             itr->next = n1;
             n1->prev = itr;
             n1->parent = n;
+            n1->getDijkCost();
         }
     return n1;
 }
@@ -366,18 +370,26 @@ bool Graph::checkResult(int temp[3][3])
     return false;
 }
 
-int Graph::Dijkstra(int temp[3][3])
-{
-    bool done = checkResult(temp);
-    int cost = 0;
-    if(done == true){
-        return cost;
-    }else
-    {
-        priority_queue<Node*> frontier;
-        
-        
+int Graph::Dijkstra(Node* current) {
+    bool done = checkResult(current->temp);
+    if (done != true) {
+        // Update the matrix with the current state
+        matrix.updateMatrix(current->temp);
+        // Generate the possible moves
+        makeMove(current->temp, current, true);
+
+        // The top node will be the one with lowest dijkstra cost
+        Node* next = frontier.top();
+        cout << next->dijk_cost << endl; 
+        frontier.pop();
+        return Dijkstra(next);
+    } else {
+        Node* iter = current;
+        while (iter != NULL) {
+            iter->printBoard();
+            cout << endl;
+            iter = iter->parent;
+        }
+        return current->dijk_cost;
     }
-
-
 }

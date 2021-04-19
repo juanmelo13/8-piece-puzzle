@@ -58,7 +58,7 @@ int main()
         cout << endl << "BFS Finished with " << result2 << " moves." << endl;
     } else if(alg == "Dijkstra") {
         cout << "Dijkstra's algorithm sequence of moves: ";
-        int result3 = g2.Dijkstra(tempMatrix);
+        int result3 = g2.Dijkstra(g2.head);
         cout << endl << "Dijkstra's algorithm finished with " << result3 << " cost." << endl;
     } else {
         cout << "Incorrect input" << endl;
