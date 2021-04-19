@@ -16,7 +16,7 @@ class AdjMatrix
         vector<int> getNeighbors(int v);
         void updateMatrix(int temp[3][3]);
         void print();
-        int m[3][3];
+        // int m[3][3]; <-- Unused 
     private:
         int matrix[9][9];
 };
